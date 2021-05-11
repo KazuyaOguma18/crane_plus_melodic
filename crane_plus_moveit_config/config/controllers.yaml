@@ -1,0 +1,78 @@
+controller_manager_ns: /
+
+hardware_interface:
+  joints:
+      - crane_plus_shoulder_revolute_joint
+      - crane_plus_shoulder_flex_joint
+      - crane_plus_elbow_joint
+      - crane_plus_wrist_joint
+  sim_control_mode: 1
+
+controller_list:
+  - name: "crane_plus_arm_controller"
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: true
+    joints:
+      - crane_plus_shoulder_revolute_joint
+      - crane_plus_shoulder_flex_joint
+      - crane_plus_elbow_joint
+      - crane_plus_wrist_joint
+  - name: "crane_plus_gripper_controller"
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: true
+    joints:
+      - crane_plus_moving_finger_joint
+
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50
+
+crane_plus_arm_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+      - crane_plus_shoulder_revolute_joint
+      - crane_plus_shoulder_flex_joint
+      - crane_plus_elbow_joint
+      - crane_plus_wrist_joint
+
+  constraints:
+    goal_time: 0.5
+    stopped_velocity_tolerance: 0.5
+    crane_plus_shoulder_revolute_joint:
+      trajectory: 0.05
+      goal: 0.02
+    crane_plus_shoulder_flex_joint:
+      trajectory: 0.05
+      goal: 0.02
+    crane_plus_elbow_joint:
+      trajectory: 0.05
+      goal: 0.02
+    crane_plus_wrist_joint:
+      trajectory: 0.05
+      goal: 0.02
+
+  gains:
+    crane_plus_shoulder_revolute_joint: {p: 1000, d: 10, i: 5, i_clamp: 1}
+    crane_plus_shoulder_flex_joint: {p: 1000, d: 10, i: 5, i_clamp: 1}
+    crane_plus_elbow_joint: {p: 1000, d: 10, i: 5, i_clamp: 1}
+    crane_plus_wrist_revolute_joint: {p: 1000, d: 10, i: 5, i_clamp: 1}
+
+  state_publishrate: 125
+  action_monitor_rate: 30
+  stop_trajectory_duration: 0
+
+crane_plus_gripper_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+      - crane_plus_moving_finger_joint
+  
+  constraints:
+    goal_time: 0.5
+    stopped_velocity_tolerance: 0.5
+    crane_plus_moving_finger_joint:
+      goal: 0.01
+
+  gains:
+    crane_plus_moving_finger_joint: {p: 1000, d: 10, i: 5, i_clamp: 1}

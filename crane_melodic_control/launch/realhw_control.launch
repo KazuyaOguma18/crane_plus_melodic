@@ -1,0 +1,43 @@
+<launch>
+
+    <arg name="db" default="false"/>
+    <arg name="db_path" default="$(find v2_gazebo_moveit_config)/default_warehouse_mongo_db"/>
+    <arg name="debug" default="false"/>
+
+    <arg name="use_gui" default="false"/>
+    <arg name="urdf_path" default="$(find v2_robot_description)/urdf/model_realhw.urdf"/>
+
+    <include file="$(find v2_gazebo_moveit_config)/launch/planning_context.launch" >
+        <arg name="load_robot_description" value="false"/>
+        <arg name="urdf_path" value="$(arg urdf_path)"/>
+    </include>
+
+    <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
+        <param name="use_gui" value="$(arg use_gui)"/>
+        <rosparam param="source_list">[/joint_states]</rosparam>
+    </node>
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" respawn="true" output="screen"/>
+
+    <include file="$(find v2_gazebo_moveit_config)/launch/move_group.launch">
+        <arg name="allow_trajectory_execution" value="true"/>
+        <arg name="fake_execution" value="false"/>
+        <arg name="info" value="true"/>
+        <arg name="debug" value="$(arg debug)"/>
+    </include>
+
+    <include file="$(find v2_gazebo_moveit_config)/launch/moveit_rviz.launch">
+        <arg name="rviz_config" value="$(find v2_gazebo_moveit_config)/launch/moveit.rviz"/>
+        <arg name="debug" default="$(arg debug)"/>
+    </include>
+
+    <include file="$(find v2_gazebo_moveit_config)/launch/default_warehouse_db.launch" if="$(arg db)">
+        <arg name="moveit_warehouse_database_path" value="$(arg db_path)"/>
+    </include>
+
+    <node pkg="closer_realhw_control" type="realhw_controller" name="realhw_controller" respawn="true" output="screen"/>
+
+    <!-- <node pkg="rosserial_arduino" type="serial_node.py" name="serial_node" args="_port:=/dev/ttyACM0 _baud:=921600" /> -->
+
+    <include file="$(find v2_gazebo_moveit_config)/launch/ros_controllers.launch" />
+</launch>
