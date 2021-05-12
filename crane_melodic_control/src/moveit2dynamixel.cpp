@@ -114,7 +114,7 @@ int main(int argc, char **argv)
           jtp0.points[k].positions.resize(5);
           jtp0.points[k].velocities.resize(5);
           jtp0.points[k].accelerations.resize(5);
-          jtp0.points[k].time_from_start = ros::Duration(0.5);
+          jtp0.points[k].time_from_start = ros::Duration(0.2);
           for(int j=0; j<5; j++){
             jtp0.points[k].positions[j] = joint_pos[i][j];
             jtp0.points[k].velocities[j] = joint_vel[i][j];

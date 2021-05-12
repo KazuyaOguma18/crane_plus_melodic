@@ -16,12 +16,13 @@
   <!-- If needed, broadcast static tf for robot root -->
   
 
-  <!-- We do not have a robot connected, so publish fake joint states -->
+  <!-- We do not have a robot connected, so publish fake joint states
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
     <param name="/use_gui" value="false"/>
     <param name="/rate" value="50" />
     <rosparam param="/source_list">[/dynamixel_workbench/joint_states]</rosparam>
   </node>
+  -->
 
   <!-- Given the published joint states, publish tf for the robot links -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
@@ -57,6 +58,8 @@
   <group ns="crane_plus_gripper_controller">
     <node name="follow_joint_trajectory" pkg="crane_melodic_control" type="crane_control_node" respawn="true" output="screen" />
   </group>
+
+  <node name="change_jointname" pkg="crane_melodic_control" type="change_jointname" respawn="true" output="screen" />
 
   <remap from="crane_plus_arm_controller/dynamixel_workbench/joint_trajectory" to="/joint_trajectory"/>
   <remap from="crane_plus_gripper_controller/dynamixel_workbench/joint_trajectory" to="/joint_trajectory"/>
